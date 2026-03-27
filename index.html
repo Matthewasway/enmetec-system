@@ -2,80 +2,331 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>出库指令</title>
+  <title>恩美特出库登记</title>
   <style>
     body {
-      font-family: Arial;
+      font-family: Arial, sans-serif;
       padding: 20px;
-      max-width: 500px;
+      max-width: 960px;
       margin: auto;
+      background: #ffffff;
+      color: #222;
     }
-    select, input, button {
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .summary {
+      background: #f5f5f5;
+      padding: 12px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+    }
+
+    .form-box {
+      background: #fafafa;
+      padding: 16px;
+      border-radius: 8px;
+      border: 1px solid #e5e5e5;
+      margin-bottom: 20px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .full-width {
+      grid-column: 1 / -1;
+    }
+
+    select, input, button, textarea {
       width: 100%;
       padding: 12px;
-      margin-top: 10px;
       font-size: 16px;
       box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background: #fff;
     }
-    .log {
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .button-row button {
+      width: auto;
+      min-width: 140px;
+      cursor: pointer;
+    }
+
+    .table-box {
       margin-top: 20px;
-      background: #f5f5f5;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
       padding: 10px;
-      min-height: 60px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 14px;
+    }
+
+    th {
+      background: #f0f0f0;
+    }
+
+    .empty {
+      margin-top: 20px;
+      padding: 20px;
+      background: #f5f5f5;
+      border-radius: 8px;
+      color: #666;
+    }
+
+    .small-btn {
+      padding: 6px 10px;
+      font-size: 13px;
+      width: auto;
+      min-width: 70px;
+    }
+
+    @media (max-width: 768px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .button-row {
+        flex-direction: column;
+      }
+
+      .button-row button {
+        width: 100%;
+      }
+
+      th, td {
+        font-size: 13px;
+      }
     }
   </style>
 </head>
 <body>
 
-  <h2>📦 出库指令</h2>
+  <h1>📦 恩美特出库登记</h1>
 
-  <select id="product">
-    <option value="">请选择产品</option>
-    <option value="中央净水机">中央净水机</option>
-    <option value="中央软水机">中央软水机</option>
-    <option value="RO净水机">RO净水机</option>
-    <option value="超滤机">超滤机</option>
-    <option value="前置过滤器">前置过滤器</option>
-  </select>
+  <div class="summary" id="summary">
+    今日记录数：0
+  </div>
 
-  <input id="quantity" type="number" placeholder="数量">
+  <div class="form-box">
+    <div class="grid">
+      <div>
+        <label>操作人</label>
+        <select id="operator">
+          <option value="">请选择操作人</option>
+          <option value="胜哥">胜哥</option>
+          <option value="小刘">小刘</option>
+          <option value="仓库">仓库</option>
+          <option value="售后1组">售后1组</option>
+          <option value="售后2组">售后2组</option>
+        </select>
+      </div>
 
-  <button onclick="submitData()">提交</button>
-  <button onclick="clearLogs()">清空记录</button>
+      <div>
+        <label>出库类型</label>
+        <select id="outType">
+          <option value="">请选择出库类型</option>
+          <option value="销售出库">销售出库</option>
+          <option value="售后领用">售后领用</option>
+          <option value="安装领料">安装领料</option>
+          <option value="借用">借用</option>
+          <option value="调拨">调拨</option>
+        </select>
+      </div>
 
-  <div class="log" id="log"></div>
+      <div>
+        <label>产品</label>
+        <select id="product">
+          <option value="">请选择产品</option>
+          <option value="QUELLE7">QUELLE7</option>
+          <option value="Lufta中央净水机">Lufta中央净水机</option>
+          <option value="Brisa软水机">Brisa软水机</option>
+          <option value="Bolla气泡水机">Bolla气泡水机</option>
+          <option value="灵动100嵌入式净饮机">灵动100嵌入式净饮机</option>
+          <option value="前置过滤器">前置过滤器</option>
+          <option value="中央净水机滤料包">中央净水机滤料包</option>
+          <option value="RO滤芯套装">RO滤芯套装</option>
+        </select>
+      </div>
+
+      <div>
+        <label>数量</label>
+        <input id="quantity" type="number" placeholder="请输入数量">
+      </div>
+
+      <div class="full-width">
+        <label>备注</label>
+        <textarea id="remark" placeholder="可填写客户、单号、用途、特殊说明等"></textarea>
+      </div>
+    </div>
+
+    <div class="button-row">
+      <button onclick="submitData()">提交登记</button>
+      <button onclick="exportCSV()">导出CSV</button>
+      <button onclick="clearLogs()">清空全部记录</button>
+    </div>
+  </div>
+
+  <div class="table-box" id="tableBox"></div>
 
   <script>
     let logs = JSON.parse(localStorage.getItem('logs') || '[]');
 
-    function renderLogs() {
-      document.getElementById('log').innerHTML = logs.length
-        ? logs.join('')
-        : '暂无记录';
+    function saveLogs() {
+      localStorage.setItem('logs', JSON.stringify(logs));
     }
 
-    function submitData() {
-      const product = document.getElementById('product').value;
-      const quantity = document.getElementById('quantity').value.trim();
+    function saveLastSelections() {
+      localStorage.setItem('lastOperator', document.getElementById('operator').value);
+      localStorage.setItem('lastOutType', document.getElementById('outType').value);
+    }
 
-      if (!product || !quantity) {
-        alert("请填写完整信息");
+    function loadLastSelections() {
+      const lastOperator = localStorage.getItem('lastOperator') || '';
+      const lastOutType = localStorage.getItem('lastOutType') || '';
+
+      document.getElementById('operator').value = lastOperator;
+      document.getElementById('outType').value = lastOutType;
+    }
+
+    function isToday(dateString) {
+      const today = new Date();
+      const d = new Date(dateString);
+      return (
+        d.getFullYear() === today.getFullYear() &&
+        d.getMonth() === today.getMonth() &&
+        d.getDate() === today.getDate()
+      );
+    }
+
+    function updateSummary() {
+      const todayCount = logs.filter(item => isToday(item.isoTime)).length;
+      document.getElementById('summary').innerText = `今日记录数：${todayCount}`;
+    }
+
+    function renderLogs() {
+      updateSummary();
+
+      if (logs.length === 0) {
+        document.getElementById('tableBox').innerHTML =
+          '<div class="empty">暂无记录</div>';
         return;
       }
 
-      const time = new Date().toLocaleString();
-      const record = `时间：${time}<br>产品：${product}<br>数量：${quantity}<hr>`;
+      let html = `
+        <table>
+          <thead>
+            <tr>
+              <th>时间</th>
+              <th>操作人</th>
+              <th>出库类型</th>
+              <th>产品</th>
+              <th>数量</th>
+              <th>备注</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
 
-      logs.push(record);
-      localStorage.setItem('logs', JSON.stringify(logs));
+      logs.forEach((item, index) => {
+        html += `
+          <tr>
+            <td>${item.time}</td>
+            <td>${item.operator}</td>
+            <td>${item.outType}</td>
+            <td>${item.product}</td>
+            <td>${item.quantity}</td>
+            <td>${item.remark || ''}</td>
+            <td>
+              <button class="small-btn" onclick="deleteLog(${index})">删除</button>
+            </td>
+          </tr>
+        `;
+      });
+
+      html += `
+          </tbody>
+        </table>
+      `;
+
+      document.getElementById('tableBox').innerHTML = html;
+    }
+
+    function submitData() {
+      const operator = document.getElementById('operator').value;
+      const outType = document.getElementById('outType').value;
+      const product = document.getElementById('product').value;
+      const quantity = document.getElementById('quantity').value.trim();
+      const remark = document.getElementById('remark').value.trim();
+
+      if (!operator || !outType || !product || !quantity) {
+        alert('请填写完整信息');
+        return;
+      }
+
+      const now = new Date();
+      const record = {
+        isoTime: now.toISOString(),
+        time: now.toLocaleString(),
+        operator,
+        outType,
+        product,
+        quantity,
+        remark
+      };
+
+      logs.unshift(record);
+
+      saveLogs();
+      saveLastSelections();
       renderLogs();
 
       document.getElementById('product').value = '';
       document.getElementById('quantity').value = '';
+      document.getElementById('remark').value = '';
+    }
+
+    function deleteLog(index) {
+      if (!confirm('确定删除这条记录吗？')) {
+        return;
+      }
+
+      logs.splice(index, 1);
+      saveLogs();
+      renderLogs();
     }
 
     function clearLogs() {
-      if (!confirm("确定要清空全部记录吗？")) {
+      if (!confirm('确定要清空全部记录吗？此操作不可恢复。')) {
         return;
       }
 
@@ -84,6 +335,42 @@
       renderLogs();
     }
 
+    function exportCSV() {
+      if (logs.length === 0) {
+        alert('暂无记录可导出');
+        return;
+      }
+
+      const header = ['时间', '操作人', '出库类型', '产品', '数量', '备注'];
+      const rows = logs.map(item => [
+        item.time,
+        item.operator,
+        item.outType,
+        item.product,
+        item.quantity,
+        item.remark || ''
+      ]);
+
+      const csvContent = [header, ...rows]
+        .map(row =>
+          row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(',')
+        )
+        .join('\n');
+
+      const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+
+      link.setAttribute('href', url);
+      link.setAttribute('download', '出库记录.csv');
+      link.style.visibility = 'hidden';
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    loadLastSelections();
     renderLogs();
   </script>
 
