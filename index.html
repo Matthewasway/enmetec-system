@@ -35,16 +35,38 @@
   <div class="log" id="log"></div>
 
   <script>
+    let logs = JSON.parse(localStorage.getItem('logs') || '[]');
+
+    function renderLogs() {
+      document.getElementById('log').innerHTML = logs.join('');
+    }
+
     function submitData() {
       const product = document.getElementById('product').value;
       const quantity = document.getElementById('quantity').value;
+
+      if (!product || !quantity) {
+        alert("请填写完整信息");
+        return;
+      }
 
       const time = new Date().toLocaleString();
 
       const record = `时间：${time}<br>产品：${product}<br>数量：${quantity}<hr>`;
 
-      document.getElementById('log').innerHTML += record;
+      logs.push(record);
+
+      localStorage.setItem('logs', JSON.stringify(logs));
+
+      renderLogs();
+
+      // 清空输入框
+      document.getElementById('product').value = '';
+      document.getElementById('quantity').value = '';
     }
+
+    // 页面加载时渲染
+    renderLogs();
   </script>
 
 </body>
