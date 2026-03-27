@@ -10,7 +10,7 @@
       max-width: 500px;
       margin: auto;
     }
-    input, button {
+    select, input, button {
       width: 100%;
       padding: 12px;
       margin-top: 10px;
@@ -29,7 +29,15 @@
 
   <h2>📦 出库指令</h2>
 
-  <input id="product" placeholder="产品名称">
+  <select id="product">
+    <option value="">请选择产品</option>
+    <option value="中央净水机">中央净水机</option>
+    <option value="中央软水机">中央软水机</option>
+    <option value="RO净水机">RO净水机</option>
+    <option value="超滤机">超滤机</option>
+    <option value="前置过滤器">前置过滤器</option>
+  </select>
+
   <input id="quantity" type="number" placeholder="数量">
 
   <button onclick="submitData()">提交</button>
@@ -47,7 +55,7 @@
     }
 
     function submitData() {
-      const product = document.getElementById('product').value.trim();
+      const product = document.getElementById('product').value;
       const quantity = document.getElementById('quantity').value.trim();
 
       if (!product || !quantity) {
